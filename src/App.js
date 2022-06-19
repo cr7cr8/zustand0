@@ -1,11 +1,15 @@
 import logo from './logo.svg';
 import './App.css';
 import create from 'zustand'
-import { subscribeWithSelector } from 'zustand/middleware'
+import { subscribeWithSelector, devtools } from 'zustand/middleware'
 import { computed } from 'zustand-middleware-computed-state'
 import shallow from 'zustand/shallow'
 
+import ThemeContextProvider from "./ThemeStore"
+import { Button, CssBaseline, Switch, Typography } from '@mui/material';
 
+
+import { ThemeProvider, useTheme, createTheme, experimental_sx as sx } from '@mui/material/styles';
 import React, { memo, useEffect } from "react"
 
 const log = (config) => (set, get, api) =>
@@ -22,7 +26,7 @@ const log = (config) => (set, get, api) =>
 
 
 
-const useStore = create(subscribeWithSelector(
+const useStore = create(devtools(subscribeWithSelector(
 
   (set, get, api) => ({
     bears: 100,
@@ -31,11 +35,13 @@ const useStore = create(subscribeWithSelector(
     obj: { a: "a", b: "b", c: "c", random: Math.random() },
 
 
+
+
     increasePopulation: () => {
 
 
-      set((state) => ({ bears: state.bears + 1 }),false)
-    //  set((state) => ({ ...state, bears: state.bears + 1 }), true)
+      set((state) => ({ bears: state.bears + 1 }), false)
+      //  set((state) => ({ ...state, bears: state.bears + 1 }), true)
 
     },
     removeAllBears: () => {
@@ -52,7 +58,7 @@ const useStore = create(subscribeWithSelector(
         return { obj: { ...state.obj } }
       })
     }
-  })))
+  }))))
 
 const unsub4 = useStore.subscribe(
   (state) => [state.bears, state.bees],
@@ -72,22 +78,33 @@ console.log(useStore.getState())
 
 function App() {
 
+
   // const fullName = useStore(state => state.fullName)
   // const obj = useStore(state => state.obj)
   // const setObj = useStore(state => state.setObj)
   //const increasePopulation = useStore(state => state.increasePopulation)
 
   const { fullName, obj, setObj, removeAllBears, increasePopulation } = useStore(({ fullName, obj, setObj, removeAllBears, increasePopulation }) =>
-   ({ fullName, obj, setObj, removeAllBears, increasePopulation }), shallow)
+    ({ fullName, obj, setObj, removeAllBears, increasePopulation }), shallow)
 
 
 
   return (
     <div className="App">
+
+
+      <ThemeContextProvider>
+        
+      <Compo />
+        <Button onClick={function () {
+      
+
+      }}>aaa</Button></ThemeContextProvider>
+
       <h1>{fullName}</h1>
       <button onClick={function () {
-       // increasePopulation()
-          useStore.setState((preState) => { return { bears: preState.bears + 1 } },false)
+        // increasePopulation()
+        useStore.setState((preState) => { return { bears: preState.bears + 1 } }, false)
         //removeAllBears()
       }}>+</button>
       {JSON.stringify(obj)}
@@ -116,3 +133,13 @@ const SubCompo = memo(function () {
     <h1>{computedCount}</h1>
   )
 })
+
+
+const Compo = function(){
+
+  const natureTheme = useTheme()
+
+  return <Button onClick={function(){
+    natureTheme.toggleMode()
+  }}>natureTheme</Button>
+}
