@@ -1,3 +1,6 @@
+
+
+
 import logo from './logo.svg';
 import './App.css';
 import create from 'zustand'
@@ -10,7 +13,9 @@ import { Button, CssBaseline, Switch, Typography } from '@mui/material';
 
 
 import { ThemeProvider, useTheme, createTheme, experimental_sx as sx } from '@mui/material/styles';
-import React, { memo, useEffect } from "react"
+import React, { useState, memo, useEffect } from "react"
+
+import { createContext, useContextSelector } from 'use-context-selector';
 
 const log = (config) => (set, get, api) =>
   config(
@@ -76,6 +81,21 @@ console.log(useStore.getState())
 //   );
 // });
 
+
+const Context = createContext()
+const ContextProvider = ({ children }) => {
+
+  const [state1, setState1] = useState(1)
+  const [state2, setState2] = useState(2)
+
+  return (
+    <Context.Provider value={{ state1, setState1, state2, setState2 }}>
+      {children}
+    </Context.Provider>
+  )
+
+}
+
 function App() {
 
 
@@ -89,32 +109,35 @@ function App() {
 
 
 
+
   return (
-    <div className="App">
+    <ContextProvider>
+      <div className="App">
 
 
-      <ThemeContextProvider>
-        
-      <Compo />
-        <Button onClick={function () {
-      
+        <ThemeContextProvider>
 
-      }}>aaa</Button></ThemeContextProvider>
+          <Compo />
+          <Button onClick={function () {
 
-      <h1>{fullName}</h1>
-      <button onClick={function () {
-        // increasePopulation()
-        useStore.setState((preState) => { return { bears: preState.bears + 1 } }, false)
-        //removeAllBears()
-      }}>+</button>
-      {JSON.stringify(obj)}
-      <button onClick={function () {
-        setObj()
 
-      }}>setObj</button>
+          }}>aaa</Button></ThemeContextProvider>
 
-      <SubCompo />
-    </div>
+        <h1>{fullName}</h1>
+        <button onClick={function () {
+          // increasePopulation()
+          useStore.setState((preState) => { return { bears: preState.bears + 1 } }, false)
+          //removeAllBears()
+        }}>+</button>
+        {JSON.stringify(obj)}
+        <button onClick={function () {
+          setObj()
+
+        }}>setObj</button>
+
+        <SubCompo />
+      </div>
+    </ContextProvider>
   );
 }
 
@@ -125,21 +148,48 @@ const SubCompo = memo(function () {
 
   const computedCount = useStore(state => state.computedCount) // to avaoid rerendder when other prop in store updates
 
+
+  //Cannot use de-structor or de-array to acheive partial update
+  //const { state1, setState1 } = useContextSelector(Context, (state) => ({ state1:state.state1, setState1:state.setState1 }));
+  const state1 = useContextSelector(Context, (state) => (state.state1));
+  const setState1 = useContextSelector(Context, (state) => (state.setState1));
+
   useEffect(function () {
     console.log("subcompo =====")
   })
 
   return (
-    <h1>{computedCount}</h1>
+    <>
+      <h1>{computedCount}</h1>
+      <h3>{state1}</h3>
+      <button onClick={function () {
+        setState1(pre => pre + 1)
+      }}>state1</button>
+    </>
   )
 })
 
 
-const Compo = function(){
+const Compo = memo(function () {
 
   const natureTheme = useTheme()
 
-  return <Button onClick={function(){
-    natureTheme.toggleMode()
-  }}>natureTheme</Button>
-}
+  const state2 = useContextSelector(Context, (state) => (state.state2));
+  const setState2 = useContextSelector(Context, (state) => (state.setState2));
+
+  useEffect(function () {
+    console.log("compo =====")
+  })
+
+
+  return <>
+    <Button onClick={function () {
+      natureTheme.toggleMode()
+    }}>natureTheme</Button>
+
+    <h3>{state2}</h3>
+    <button onClick={function () {
+      setState2(pre => pre + 1)
+    }}>state2</button>
+  </>
+})
