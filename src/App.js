@@ -56,7 +56,7 @@ const useStore = create(devtools(subscribeWithSelector(
 
     },
     setObj: () => {
-      console.log("xxx")
+
       set((state) => {
 
         state.obj.e = Date.now()
@@ -154,18 +154,23 @@ const SubCompo = memo(function () {
   const state1 = useContextSelector(Context, (state) => (state.state1));
   const setState1 = useContextSelector(Context, (state) => (state.setState1));
 
+
+  const { bees } = useStore(({ bees }) =>
+    ({ bees }), shallow)
+
   useEffect(function () {
     console.log("subcompo =====")
   })
 
   return (
-    <>
-      <h1>{computedCount}</h1>
-      <h3>{state1}</h3>
+    <div style={{ background: "lightblue" }}>
+      <h1>computedCount {computedCount}</h1>
+      <h3>state1 {state1}</h3>
+      <h4>bees {bees}</h4>
       <button onClick={function () {
         setState1(pre => pre + 1)
       }}>state1</button>
-    </>
+    </div>
   )
 })
 
@@ -174,6 +179,8 @@ const Compo = memo(function () {
 
   const natureTheme = useTheme()
 
+  const { bears } = useStore(({ bears }) =>
+    ({ bears }), shallow)
   const state2 = useContextSelector(Context, (state) => (state.state2));
   const setState2 = useContextSelector(Context, (state) => (state.setState2));
 
@@ -182,14 +189,15 @@ const Compo = memo(function () {
   })
 
 
-  return <>
+  return <div style={{ background: "lightyellow" }}>
     <Button onClick={function () {
       natureTheme.toggleMode()
     }}>natureTheme</Button>
 
-    <h3>{state2}</h3>
+    <h3>state2 {state2}</h3>
+    <h4>bears {bears}</h4>
     <button onClick={function () {
       setState2(pre => pre + 1)
     }}>state2</button>
-  </>
+  </div>
 })
