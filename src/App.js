@@ -1,6 +1,5 @@
-
-
-
+/** @jsxRuntime classic */
+/** @jsx jsx */
 import logo from './logo.svg';
 import './App.css';
 import create from 'zustand'
@@ -16,6 +15,10 @@ import { ThemeProvider, useTheme, createTheme, experimental_sx as sx } from '@mu
 import React, { useState, memo, useEffect } from "react"
 
 import { createContext, useContextSelector } from 'use-context-selector';
+///** @jsx jsx */ import { jsx } from '@emotion/core'
+import { css ,jsx} from'@emotion/react/macro'
+
+
 
 const log = (config) => (set, get, api) =>
   config(
@@ -91,6 +94,21 @@ const ContextProvider = ({ children }) => {
   return (
     <Context.Provider value={{ state1, setState1, state2, setState2 }}>
       {children}
+
+
+      <div
+        css={{
+          backgroundColor: 'hotpink',
+          '&:hover': {
+            color: 'lightgreen',
+            backgroundColor:"gray",
+          }
+        }}
+      >
+        This has a hotpink background.
+      </div>
+
+<Button sx={{backgroundColor:"yellow"}}>TEST</Button>
     </Context.Provider>
   )
 
