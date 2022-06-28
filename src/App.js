@@ -30,6 +30,7 @@ const mq = facepaint([
 
 ])
 
+
 const cssObj = [
 
   mq({ backgroundColor: ["rgba(200,10,10,0.2)", "rgba(200,10,10,0.4)", "rgba(200,10,10,0.6)", "rgba(200,10,10,0.8)", "rgba(200,10,10,1)"] }),
@@ -44,7 +45,8 @@ const cssObj = [
   {
     '&  p': {
       color: "green",
-      fontSize: "2rem"
+      fontSize: "2rem",
+      
     }
   }
 ]
@@ -134,7 +136,7 @@ const ContextProvider = ({ children }) => {
 
 
       <div
-        css={cssObj}
+        css={[cssObj]}
       >
         This has a hotpink background.
       </div>
