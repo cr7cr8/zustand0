@@ -1,5 +1,8 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
+import { css, jsx } from '@emotion/react/macro'
+
+
 import logo from './logo.svg';
 import './App.css';
 import create from 'zustand'
@@ -15,8 +18,38 @@ import { ThemeProvider, useTheme, createTheme, experimental_sx as sx } from '@mu
 import React, { useState, memo, useEffect } from "react"
 
 import { createContext, useContextSelector } from 'use-context-selector';
-///** @jsx jsx */ import { jsx } from '@emotion/core'
-import { css ,jsx} from'@emotion/react/macro'
+
+
+import facepaint from 'facepaint'
+const mq = facepaint([
+  
+  '@media(min-width: 600px) and (max-width: 899px)',  
+  '@media(min-width: 900px) and (max-width: 1199px)',  
+  '@media(min-width: 1200px) and (max-width: 1535px)',  
+  '@media(min-width: 1536px)' ,  
+
+])
+
+const cssObj = [
+
+  mq({ backgroundColor: ["rgba(200,10,10,0.2)", "rgba(200,10,10,0.4)", "rgba(200,10,10,0.6)", "rgba(200,10,10,0.8)", "rgba(200,10,10,1)"] }),
+
+  // {
+  //   '&:hover': {
+  //     color: 'lightgreen',
+  //     backgroundColor: "gray",
+  //   }
+  // },
+  { height: "300px" },
+  {
+    '&  p': {
+      color: "green",
+      fontSize: "2rem"
+    }
+  }
+]
+
+
 
 
 
@@ -91,24 +124,27 @@ const ContextProvider = ({ children }) => {
   const [state1, setState1] = useState(1)
   const [state2, setState2] = useState(2)
 
+
+  //console.log(css(cssObj))
+
   return (
     <Context.Provider value={{ state1, setState1, state2, setState2 }}>
       {children}
 
 
+
       <div
-        css={{
-          backgroundColor: 'hotpink',
-          '&:hover': {
-            color: 'lightgreen',
-            backgroundColor:"gray",
-          }
-        }}
+        css={cssObj}
       >
         This has a hotpink background.
       </div>
+      <div
+        css={cssObj}
+      >
+        <p>This has a hotpink background.</p>
+      </div>
 
-<Button sx={{backgroundColor:"yellow"}}>TEST</Button>
+      <Button sx={{ backgroundColor: "yellow" }}>TEST</Button>
     </Context.Provider>
   )
 
@@ -211,6 +247,7 @@ const Compo = memo(function () {
     <Button onClick={function () {
       natureTheme.toggleMode()
     }}>natureTheme</Button>
+
 
     <h3>state2 {state2}</h3>
     <h4>bears {bears}</h4>
